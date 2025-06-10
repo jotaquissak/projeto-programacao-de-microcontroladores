@@ -20,6 +20,9 @@ int TempBaixa=0;
 // Define temperatura alta como acima de 40 graus Celsius
 int TempAlta=50;
 
+const int ledVermelho = 2;
+const int ledAmarelo = 3;
+
 
 void setup() 
 {
@@ -47,7 +50,9 @@ void setup()
   
   // Imprime a mensagem no LCD
   lcd.print("          C     ");
-  
+
+  pinMode (ledVermelho, OUTPUT);
+  pinMode (ledAmarelo, OUTPUT);
   Serial.begin(9600);
 }
 
@@ -72,15 +77,21 @@ void loop()
   // Acende ou apaga os alertas luminosos de temperatura baixa e alta
   	if (TemperaturaC>=TempAlta) {
   		digitalWrite(AlertaTempBaixa, LOW);
+  		digitalWrite(ledAmarelo, LOW);
   		digitalWrite(AlertaTempAlta, HIGH);
+  		digitalWrite(ledVermelho, HIGH);
     }
   	else if (TemperaturaC<=TempBaixa) {
   		digitalWrite(AlertaTempBaixa, HIGH);
+  		digitalWrite(ledAmarelo, HIGH);
   		digitalWrite(AlertaTempAlta, LOW);
+  		digitalWrite(ledVermelho, LOW);
   	}
   	else {
   		digitalWrite(AlertaTempBaixa, LOW);
+  		digitalWrite(ledAmarelo, LOW);
   		digitalWrite(AlertaTempAlta, LOW);
+  		digitalWrite(ledVermelho, LOW);
     }
 
   // Aguarda 1 segundo
