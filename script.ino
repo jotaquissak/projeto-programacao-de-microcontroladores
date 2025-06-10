@@ -10,15 +10,15 @@ int SensorTempPino=0;
 int porcem=0;
 
 
-// Define o pino 8 para o alerta de temperatura baixa
-int AlertaTempBaixa=3;
-// Define o pino 13 para o alerta de temperatura alta
-int AlertaTempAlta=2;
+// Define o pino 3 para o alerta de temperatura baixa
+int AlertaTempAlta=3;
+// Define o pino 2 para o alerta de temperatura alta
+int AlertaTempSuperAlta=2;
 
-// Define temperatura baixa como abaixo de zero grau Celsius
-int TempBaixa=0;
 // Define temperatura alta como acima de 40 graus Celsius
-int TempAlta=50;
+int TempAlta=40;
+// Define temperatura super alta como acima de 50 graus Celsius
+int TempSuperAlta=50;
 
 const int ledVermelho = 2;
 const int ledAmarelo = 3;
@@ -28,15 +28,15 @@ void setup()
 {
   
   // Informa se os pinos dos LEDs são de entrada ou saída
-  pinMode(AlertaTempBaixa, OUTPUT);  
-  pinMode(AlertaTempAlta, OUTPUT);
+  pinMode(AlertaTempAlta, OUTPUT);  
+  pinMode(AlertaTempSuperAlta, OUTPUT);
 	
-  // Define LCD 16 colunas por 2 linhas
-  lcd.begin(16,2);
-  
   // Inicializa o LCD
   lcd.init();
   lcd.backlight();
+  
+  // Define LCD 16 colunas por 2 linhas
+  lcd.begin(16,2);
   lcd.clear();
   
   //Posiciona o cursor na coluna 0, linha 0;
@@ -51,8 +51,9 @@ void setup()
   // Imprime a mensagem no LCD
   lcd.print("          C     ");
 
-  pinMode (ledVermelho, OUTPUT);
-  pinMode (ledAmarelo, OUTPUT);
+  // Inicialização dos Leds
+  pinMode(ledVermelho, OUTPUT);
+  pinMode(ledAmarelo, OUTPUT);
   Serial.begin(9600);
 }
 
@@ -74,23 +75,23 @@ void loop()
    // Imprime a temperatura em Graus Celsius
    lcd.print(TemperaturaC);     
   
-  // Acende ou apaga os alertas luminosos de temperatura baixa e alta
-  	if (TemperaturaC>=TempAlta) {
-  		digitalWrite(AlertaTempBaixa, LOW);
-  		digitalWrite(ledAmarelo, LOW);
+  // Estrutura condicional de temperatura alta e super alta
+  	if (TemperaturaC>=AlertaTempAlta && TemperaturaC < AlertaTempSuperAlta) {
   		digitalWrite(AlertaTempAlta, HIGH);
-  		digitalWrite(ledVermelho, HIGH);
-    }
-  	else if (TemperaturaC<=TempBaixa) {
-  		digitalWrite(AlertaTempBaixa, HIGH);
   		digitalWrite(ledAmarelo, HIGH);
-  		digitalWrite(AlertaTempAlta, LOW);
+  		digitalWrite(AlertaTempSuperAlta, LOW);
   		digitalWrite(ledVermelho, LOW);
+    }
+  	else if (TemperaturaC>AlertaTempSuperAlta) {
+  		digitalWrite(AlertaTempAlta, LOW);
+  		digitalWrite(ledAmarelo, LOW);
+  		digitalWrite(AlertaTempSuperAlta, HIGH);
+  		digitalWrite(ledVermelho, HIGH);
   	}
   	else {
-  		digitalWrite(AlertaTempBaixa, LOW);
-  		digitalWrite(ledAmarelo, LOW);
   		digitalWrite(AlertaTempAlta, LOW);
+  		digitalWrite(ledAmarelo, LOW);
+  		digitalWrite(AlertaTempSuperAlta, LOW);
   		digitalWrite(ledVermelho, LOW);
     }
 
