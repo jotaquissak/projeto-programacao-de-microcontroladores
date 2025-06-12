@@ -31,6 +31,7 @@ int TempSuperAlta = 50;
 // Define os pinos 2 e 3 para os Leds
 const int ledVermelho = 2;
 const int ledAmarelo = 3;
+const int buzzer = 6;
 
 // Define variaveis de alarme e emergência
 bool alarm = false;
@@ -71,6 +72,7 @@ void setup()
   // Inicialização dos Leds
   pinMode(ledVermelho, OUTPUT);
   pinMode(ledAmarelo, OUTPUT);
+  pinMode(buzzer, OUTPUT);
   Serial.begin(9600);
 }
 
@@ -105,6 +107,16 @@ void loop()
     digitalWrite(ledVermelho, HIGH);
     alarm = false;
     emergency = true;
+    for (freq = 200; freq < 2000; freq++) {
+      tone(6, freq, 10);
+      delay(1);
+    }
+
+    for (freq = 2000; freq > 200; freq--) {
+      tone(6, freq, 10);
+      delay(1);
+    }
+
   }
   else
   {
