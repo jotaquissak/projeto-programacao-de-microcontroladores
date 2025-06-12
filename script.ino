@@ -1,5 +1,7 @@
 // Carrega a Biblioteca LiquidCrystal
 #include <LiquidCrystal_I2C.h>
+// Carrega a Biblioteca Wire.h
+#include <Wire.h>
 
 // Define os pinos que serão utilizados para ligação ao display
 LiquidCrystal_I2C lcd(32, 16, 2);
@@ -27,6 +29,9 @@ const int ledAmarelo = 3;
 // Define variaveis de alarme e emergência
 bool alarm = false;
 bool emergency = false;
+bool mostrarMensagemAlerta = false;
+unsigned long ultimoTempo = 0;
+const unsigned long intervalo = 2000;
 
 
 void setup() 
@@ -73,12 +78,6 @@ void loop()
 
    // Converte a tensao lida em Graus Celsius
    float TemperaturaC=(Tensao-0.5)*100;
-
-   // Muda o cursor para a primeira coluna e segunda linha do LCD
-   lcd.setCursor(5,1);
-
-   // Imprime a temperatura em Graus Celsius
-   lcd.print(TemperaturaC);     
   
   // Estrutura condicional de temperatura alta e super alta
   	if (TemperaturaC>=AlertaTempAlta && TemperaturaC < AlertaTempSuperAlta) {
@@ -109,6 +108,26 @@ void loop()
 
     }
 
-  // Aguarda 1 segundo
-  	delay(1000);
+  // Troca de mensagens a cada 5 segundos 
+  if (millis() - ultimoTempo >= intervalo) {
+    lcd.clear();
+    if ((alarm || emergency) && mostrarMensagemAlerta) {
+      lcd.setCursor(0, 0);
+      if (emergency) {
+        lcd.print("EMERGENCIA!");
+      } else {
+        lcd.print("ALARME!");
+      }
+    } else {
+      lcd.setCursor(0, 0);
+      lcd.print("  Temperatura:  ");
+      lcd.setCursor(0,1);
+      lcd.print("          C     ");
+      lcd.setCursor(5,1);
+      lcd.print(TemperaturaC);
+    }
+
+    mostrarMensagemAlerta = !mostrarMensagemAlerta;
+    ultimoTempo = millis();
+  }
 }
