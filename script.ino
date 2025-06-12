@@ -2,12 +2,19 @@
 #include <LiquidCrystal_I2C.h>
 // Carrega a Biblioteca Wire.h
 #include <Wire.h>
+// Carrega a Biblioteca DHT
+#include <DHT.h>
 
-// Define os pinos que serão utilizados para ligação ao display
-LiquidCrystal_I2C lcd(32, 16, 2);
+// Pino e tipo do DHT
+#define DHTPIN 7        // pino onde o DHT11 está conectado
+#define DHTTYPE DHT11   // tipo do sensor
+
+DHT dht(DHTPIN, DHTTYPE);
+
+// Definir os pinos do LCD
+LiquidCrystal_I2C lcd(0x27, 16, 2); // 0x27 é o endereço mais comum do I2C
 
 // Variáveis
-
 int SensorTempPino=0;
 int porcem=0;
 
@@ -61,6 +68,8 @@ void setup()
   // Imprime a mensagem no LCD
   lcd.print("          C     ");
 
+  dht.begin(); // Inicializa o DHT11
+
   // Inicialização dos Leds
   pinMode(ledVermelho, OUTPUT);
   pinMode(ledAmarelo, OUTPUT);
@@ -69,15 +78,8 @@ void setup()
 
 void loop()
 {
-   // Faz a leitura da tensao no Sensor de Temperatura
-   int SensorTempTensao=analogRead(SensorTempPino);
+    float TemperaturaC = dht.readTemperature(); // leitura do dht digital
 
-   // Converte a tensao lida
-   float Tensao=SensorTempTensao*5;
-   Tensao/=1024;
-
-   // Converte a tensao lida em Graus Celsius
-   float TemperaturaC=(Tensao-0.5)*100;
   
   // Estrutura condicional de temperatura alta e super alta
   	if (TemperaturaC>=AlertaTempAlta && TemperaturaC < AlertaTempSuperAlta) {
