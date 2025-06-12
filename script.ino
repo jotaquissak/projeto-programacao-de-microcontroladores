@@ -20,8 +20,13 @@ int TempAlta=40;
 // Define temperatura super alta como acima de 50 graus Celsius
 int TempSuperAlta=50;
 
+// Define os pinos 2 e 3 para os Leds
 const int ledVermelho = 2;
 const int ledAmarelo = 3;
+
+// Define variaveis de alarme e emergência
+bool alarm = false;
+bool emergency = false;
 
 
 void setup() 
@@ -81,18 +86,27 @@ void loop()
   		digitalWrite(ledAmarelo, HIGH);
   		digitalWrite(AlertaTempSuperAlta, LOW);
   		digitalWrite(ledVermelho, LOW);
+      alarm = true;
+      emergency = false;
+
     }
   	else if (TemperaturaC>AlertaTempSuperAlta) {
   		digitalWrite(AlertaTempAlta, LOW);
   		digitalWrite(ledAmarelo, LOW);
   		digitalWrite(AlertaTempSuperAlta, HIGH);
   		digitalWrite(ledVermelho, HIGH);
+      alarm = false;
+      emergency = true;
+
   	}
   	else {
   		digitalWrite(AlertaTempAlta, LOW);
   		digitalWrite(ledAmarelo, LOW);
   		digitalWrite(AlertaTempSuperAlta, LOW);
   		digitalWrite(ledVermelho, LOW);
+      alarm = false;
+      emergency = false;
+
     }
 
   // Aguarda 1 segundo
